@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mazur Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --surface: #141414;
+  --surface-border: #1f1f1f;
+  --surface-hover: #1a1a1a;
+  --text-primary: #e8e8e8;
+  --text-secondary: #6b6b6b;
+  --text-muted: #444;
+  --bullish: #00dc82;
+  --bearish: #ff4444;
+  --neutral: #ffaa00;
+  --accent: #00b4d8;
+  --vix-low: #00dc82;
+  --vix-moderate: #ffaa00;
+  --vix-elevated: #ff4444;
+  --vix-extreme: #ff0000;
+  --high-confidence: #00dc82;
+  --med-confidence: #ffaa00;
+  --low-confidence: #555;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-heading: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Subtle noise overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.logo-svg {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.header-text h1 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.header-text .tagline {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.header-meta {
+  margin-left: auto;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.header-meta .timestamp {
+  color: var(--accent);
+}
+
+/* ── PLAYBOOK (HERO) ── */
+.playbook {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-left: 4px solid var(--accent);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+
+.playbook-title {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.playbook-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.playbook-item {
+  display: flex;
+  gap: 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.playbook-item .label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 160px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-top: 2px;
+}
+
+.playbook-item .value {
+  color: var(--text-primary);
+}
+
+.bias-bullish { color: var(--bullish); font-weight: 600; }
+.bias-bearish { color: var(--bearish); font-weight: 600; }
+.bias-neutral { color: var(--neutral); font-weight: 600; }
+
+/* ── MARKET CONTEXT ── */
+.market-context {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.context-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.context-item .context-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.context-item p {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* ── INSTRUMENT CARDS ── */
+.instruments-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.instrument-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  padding: 20px;
+  overflow: hidden;
+}
+
+.instrument-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.instrument-name {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+.instrument-price {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.instrument-change {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  margin-left: 8px;
+}
+
+.subsection {
+  margin-bottom: 14px;
+}
+
+.subsection-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+  font-size: 0.8rem;
+}
+
+.data-row .data-label {
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+}
+
+.data-row .data-value {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.bias-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+}
+
+.bias-badge.bullish { background: rgba(0, 220, 130, 0.15); color: var(--bullish); }
+.bias-badge.bearish { background: rgba(255, 68, 68, 0.15); color: var(--bearish); }
+.bias-badge.neutral { background: rgba(255, 170, 0, 0.15); color: var(--neutral); }
+
+.day-type-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-left: 8px;
+}
+
+/* ── TRADE SETUPS ── */
+.trade-setup {
+  background: var(--bg);
+  border: 1px solid var(--surface-border);
+  border-left: 3px solid var(--text-muted);
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.trade-setup.long { border-left-color: var(--bullish); }
+.trade-setup.short { border-left-color: var(--bearish); }
+
+.trade-setup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.trade-direction {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.trade-direction.long { color: var(--bullish); }
+.trade-direction.short { color: var(--bearish); }
+
+.trade-type {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.confidence-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 2px;
+}
+
+.confidence-badge.high { background: rgba(0, 220, 130, 0.15); color: var(--high-confidence); }
+.confidence-badge.medium { background: rgba(255, 170, 0, 0.15); color: var(--med-confidence); }
+.confidence-badge.low { background: rgba(85, 85, 85, 0.3); color: var(--low-confidence); }
+
+.trade-levels {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 16px;
+  margin-bottom: 6px;
+}
+
+.trade-levels .data-row { font-size: 0.75rem; }
+
+.trade-rationale {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 6px;
+}
+
+.trade-invalidation {
+  font-size: 0.7rem;
+  color: var(--bearish);
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* ── CROSS MARKET STRIP ── */
+.cross-market {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.cross-market-item {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  padding: 16px;
+}
+
+.cross-market-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.cross-market-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+}
+
+.cross-market-change {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.cross-market-context {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* VIX special states */
+.vix-low .cross-market-value { color: var(--vix-low); }
+.vix-moderate .cross-market-value { color: var(--vix-moderate); }
+.vix-elevated .cross-market-value { color: var(--vix-elevated); }
+.vix-extreme .cross-market-value { color: var(--vix-extreme); }
+
+@keyframes vixPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.vix-extreme .cross-market-value { animation: vixPulse 1.5s ease-in-out infinite; }
+
+/* ── ECONOMIC CALENDAR ── */
+.econ-calendar {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.econ-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.econ-table th {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.econ-table td {
+  font-size: 0.8rem;
+  padding: 8px 12px;
+  border-bottom: 1px solid #1a1a1a;
+  color: var(--text-primary);
+}
+
+.econ-table tr.high-impact { border-left: 3px solid var(--bearish); }
+.econ-table tr.medium-impact { border-left: 3px solid var(--neutral); }
+
+.econ-time {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.econ-impact {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.econ-impact.high { color: var(--bearish); }
+.econ-impact.medium { color: var(--neutral); }
+
+.econ-warning {
+  font-size: 0.75rem;
+  color: var(--bearish);
+  font-style: italic;
+}
+
+/* ── PREMARKET WARNING ── */
+.premarket-warning {
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  border-left: 4px solid var(--bearish);
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--bearish);
+}
+
+/* ── FOOTER ── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--surface-border);
+}
+
+.footer-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 20px;
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.5px;
+}
+
+.btn:hover { background: var(--surface-hover); border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.btn-primary:hover { background: #009bb8; border-color: #009bb8; color: var(--bg); }
+
+.footer-info {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.footer-info .version { color: var(--text-muted); }
+
+/* ── SKELETON LOADING ── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+.skeleton-line {
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+.skeleton-line.short { width: 60%; }
+.skeleton-line.medium { width: 80%; }
+.skeleton-line.long { width: 95%; }
+
+.skeleton-number {
+  height: 28px;
+  width: 120px;
+  margin-bottom: 12px;
+}
+
+.skeleton-block {
+  height: 80px;
+  margin-bottom: 12px;
+}
+
+/* ── ERROR STATE ── */
+.error-state {
+  background: var(--surface);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  padding: 32px;
+  text-align: center;
+  margin: 40px 0;
+}
+
+.error-state h3 {
+  font-family: var(--font-heading);
+  color: var(--bearish);
+  margin-bottom: 12px;
+}
+
+.error-state p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ── LOADING OVERLAY ── */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 13, 13, 0.85);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loading-overlay.active { display: flex; }
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--surface-border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+/* ── DATA NOTE ── */
+.data-note {
+  background: rgba(255, 170, 0, 0.08);
+  border: 1px solid rgba(255, 170, 0, 0.2);
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--neutral);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .instruments-grid { grid-template-columns: 1fr; }
+  .cross-market { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .header { flex-direction: column; align-items: flex-start; }
+  .header-meta { margin-left: 0; text-align: left; margin-top: 8px; }
+  .cross-market { grid-template-columns: 1fr; }
+  .playbook-item { flex-direction: column; gap: 2px; }
+  .playbook-item .label { min-width: auto; }
+  .footer { flex-direction: column; gap: 12px; }
+}
+
+/* ── ORB PROGRESS BAR ── */
+.orb-progress {
+  height: 4px;
+  background: var(--surface-border);
+  margin-top: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.orb-progress-fill {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.orb-progress-marker {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 10px;
+  background: var(--text-primary);
+  transform: translateX(-50%);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- HEADER -->
+  <header class="header">
+    <svg class="logo-svg" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Coffee cup body -->
+      <rect x="10" y="24" width="28" height="22" rx="3" stroke="#e8e8e8" stroke-width="2" fill="none"/>
+      <!-- Cup handle -->
+      <path d="M38 30 C44 30, 46 36, 44 40 C42 44, 38 42, 38 40" stroke="#e8e8e8" stroke-width="2" fill="none"/>
+      <!-- Saucer -->
+      <ellipse cx="24" cy="48" rx="18" ry="3" stroke="#e8e8e8" stroke-width="1.5" fill="none" opacity="0.5"/>
+      <!-- Candlestick 1 (green, bullish) -->
+      <line x1="17" y1="8" x2="17" y2="22" stroke="#00dc82" stroke-width="1"/>
+      <rect x="15" y="11" width="4" height="7" fill="#00dc82"/>
+      <!-- Candlestick 2 (red, bearish) -->
+      <line x1="24" y1="5" x2="24" y2="20" stroke="#ff4444" stroke-width="1"/>
+      <rect x="22" y="8" width="4" height="6" fill="#ff4444"/>
+      <!-- Candlestick 3 (green, bullish, tallest) -->
+      <line x1="31" y1="2" x2="31" y2="18" stroke="#00dc82" stroke-width="1"/>
+      <rect x="29" y="5" width="4" height="9" fill="#00dc82"/>
+    </svg>
+    <div class="header-text">
+      <h1>THE MAZUR BRIEF</h1>
+      <div class="tagline">Your 5 AM edge. Every morning.</div>
+    </div>
+    <div class="header-meta">
+      <div id="briefing-date"></div>
+      <div class="timestamp" id="briefing-timestamp">Loading...</div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main id="app">
+    <!-- Initial skeleton state -->
+    <div id="skeleton-state">
+      <div class="playbook">
+        <div class="playbook-title">TODAY'S PLAYBOOK</div>
+        <div class="skeleton skeleton-line long"></div>
+        <div class="skeleton skeleton-line medium"></div>
+        <div class="skeleton skeleton-line long"></div>
+        <div class="skeleton skeleton-line short"></div>
+        <div class="skeleton skeleton-line medium"></div>
+      </div>
+      <div class="market-context">
+        <div class="section-title">Market Context</div>
+        <div class="skeleton skeleton-block"></div>
+      </div>
+      <div class="instruments-grid">
+        <div class="instrument-card"><div class="section-title">NQ</div><div class="skeleton skeleton-number"></div><div class="skeleton skeleton-block"></div><div class="skeleton skeleton-block"></div></div>
+        <div class="instrument-card"><div class="section-title">ES</div><div class="skeleton skeleton-number"></div><div class="skeleton skeleton-block"></div><div class="skeleton skeleton-block"></div></div>
+        <div class="instrument-card"><div class="section-title">GC</div><div class="skeleton skeleton-number"></div><div class="skeleton skeleton-block"></div><div class="skeleton skeleton-block"></div></div>
+      </div>
+    </div>
+
+    <!-- Live content (hidden until data loads) -->
+    <div id="live-content" style="display:none">
+
+      <!-- DATA NOTE -->
+      <div class="data-note" id="data-note"></div>
+
+      <!-- PREMARKET WARNING -->
+      <div class="premarket-warning" id="premarket-warning" style="display:none"></div>
+
+      <!-- PLAYBOOK -->
+      <div class="playbook" id="playbook-section"></div>
+
+      <!-- MARKET CONTEXT -->
+      <div class="market-context" id="context-section"></div>
+
+      <!-- INSTRUMENT CARDS -->
+      <div class="instruments-grid" id="instruments-section"></div>
+
+      <!-- CROSS MARKET -->
+      <div class="cross-market" id="cross-market-section"></div>
+
+      <!-- ECONOMIC CALENDAR -->
+      <div class="econ-calendar" id="econ-calendar-section"></div>
+    </div>
+
+    <!-- Error state -->
+    <div id="error-state" style="display:none"></div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-buttons">
+      <button class="btn btn-primary" id="btn-refresh" onclick="refreshBriefing()">REFRESH PRE-MARKET</button>
+      <button class="btn" id="btn-ny-orb" onclick="updateNyOrb()" style="display:none">UPDATE NY ORB</button>
+    </div>
+    <div class="footer-info">
+      <span>The Mazur Brief — Not financial advice.</span>
+      <span class="version" id="version-display"></span>
+    </div>
+  </footer>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loading-text">Generating your morning briefing...</div>
+</div>
+
+<script>
+const CACHE_PREFIX = 'mazur-brief-';
+const TODAY = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+
+// ── Initialize ──
+document.addEventListener('DOMContentLoaded', async () => {
+  // Set date display
+  const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById('briefing-date').textContent = new Date().toLocaleDateString('en-US', dateOpts);
+
+  // Load version
+  try {
+    const vRes = await fetch('/api/version');
+    const vData = await vRes.json();
+    document.getElementById('version-display').textContent = ' · v' + vData.version;
+  } catch(e) {}
+
+  // Check NY ORB button visibility (show after 9:45 AM ET)
+  checkNyOrbVisibility();
+  setInterval(checkNyOrbVisibility, 60000);
+
+  // Check cache
+  const cached = localStorage.getItem(CACHE_PREFIX + TODAY);
+  if (cached) {
+    try {
+      const data = JSON.parse(cached);
+      renderBriefing(data);
+      return;
+    } catch(e) {
+      localStorage.removeItem(CACHE_PREFIX + TODAY);
+    }
+  }
+
+  // No cache — fetch fresh
+  await fetchBriefing();
+});
+
+function checkNyOrbVisibility() {
+  const now = new Date();
+  const etOffset = getETOffset();
+  const etHour = new Date(now.getTime() + etOffset).getUTCHours();
+  const etMin = new Date(now.getTime() + etOffset).getUTCMinutes();
+  const totalMin = etHour * 60 + etMin;
+  // Show after 9:45 AM ET = 585 minutes
+  document.getElementById('btn-ny-orb').style.display = totalMin >= 585 ? 'inline-block' : 'none';
+}
+
+function getETOffset() {
+  // Approximate ET offset from UTC (handles DST roughly)
+  const jan = new Date(new Date().getFullYear(), 0, 1).getTimezoneOffset();
+  const jul = new Date(new Date().getFullYear(), 6, 1).getTimezoneOffset();
+  const isDST = new Date().getTimezoneOffset() < Math.max(jan, jul);
+  return isDST ? -4 * 3600000 : -5 * 3600000;
+}
+
+async function fetchBriefing() {
+  showLoading('Generating your morning briefing...');
+  try {
+    const res = await fetch('/api/briefing', { method: 'POST' });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
+      throw new Error(err.detail || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    data._generated_at_local = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' }) + ' ET';
+    localStorage.setItem(CACHE_PREFIX + TODAY, JSON.stringify(data));
+    renderBriefing(data);
+  } catch(e) {
+    showError(e.message);
+  }
+  hideLoading();
+}
+
+async function refreshBriefing() {
+  localStorage.removeItem(CACHE_PREFIX + TODAY);
+  await fetchBriefing();
+}
+
+async function updateNyOrb() {
+  showLoading('Fetching NY Opening Range data...');
+  try {
+    const res = await fetch('/api/ny-orb', { method: 'POST' });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
+      throw new Error(err.detail || `HTTP ${res.status}`);
+    }
+    const orbData = await res.json();
+
+    // Merge with cached data
+    const cached = localStorage.getItem(CACHE_PREFIX + TODAY);
+    if (cached) {
+      const data = JSON.parse(cached);
+      // Merge NY ORB data into instruments
+      for (const sym of ['NQ', 'ES', 'GC']) {
+        if (orbData.instruments && orbData.instruments[sym]) {
+          Object.assign(data.instruments[sym], orbData.instruments[sym]);
+          data.instruments[sym].ny_orb_status = 'Filled';
+        }
+      }
+      // Update playbook if provided
+      if (orbData.updated_playbook) {
+        Object.assign(data.playbook, orbData.updated_playbook);
+      }
+      data._generated_at_local = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' }) + ' ET (NY ORB update)';
+      localStorage.setItem(CACHE_PREFIX + TODAY, JSON.stringify(data));
+      renderBriefing(data);
+    }
+  } catch(e) {
+    showError('NY ORB update failed: ' + e.message);
+  }
+  hideLoading();
+}
+
+// ── Render Functions ──
+
+function renderBriefing(data) {
+  document.getElementById('skeleton-state').style.display = 'none';
+  document.getElementById('error-state').style.display = 'none';
+  document.getElementById('live-content').style.display = 'block';
+
+  // Timestamp
+  const ts = data._generated_at_local || data.generated_at || 'Unknown';
+  document.getElementById('briefing-timestamp').textContent = 'Briefing generated at ' + ts;
+
+  // Data note
+  if (data.data_note) {
+    document.getElementById('data-note').textContent = '⚠ ' + data.data_note;
+    document.getElementById('data-note').style.display = 'block';
+  }
+
+  // Premarket warning
+  if (data.premarket_warning && data.premarket_warning !== 'null' && data.premarket_warning !== null) {
+    document.getElementById('premarket-warning').textContent = data.premarket_warning;
+    document.getElementById('premarket-warning').style.display = 'block';
+  }
+
+  renderPlaybook(data.playbook);
+  renderContext(data.market_context);
+  renderInstruments(data.instruments);
+  renderCrossMarket(data.cross_market);
+  renderCalendar(data.economic_calendar);
+}
+
+function biasClass(bias) {
+  if (!bias) return '';
+  const b = bias.toLowerCase();
+  if (b.includes('bull')) return 'bullish';
+  if (b.includes('bear')) return 'bearish';
+  return 'neutral';
+}
+
+function changeIndicator(val) {
+  const n = parseFloat(val);
+  if (isNaN(n) || n === 0) return { cls: 'neutral', icon: '—' };
+  return n > 0 ? { cls: 'bullish', icon: '▲' } : { cls: 'bearish', icon: '▼' };
+}
+
+function fmt(n) {
+  if (n === null || n === undefined || n === 0) return '—';
+  return typeof n === 'number' ? n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : String(n);
+}
+
+function renderPlaybook(pb) {
+  if (!pb) return;
+  const bc = biasClass(pb.primary_bias);
+  document.getElementById('playbook-section').innerHTML = `
+    <div class="playbook-title">TODAY'S PLAYBOOK</div>
+    <div class="playbook-items">
+      <div class="playbook-item">
+        <span class="label">Primary Bias</span>
+        <span class="value bias-${bc}">${pb.primary_bias} — ${pb.bias_reason}</span>
+      </div>
+      <div class="playbook-item">
+        <span class="label">Day Type</span>
+        <span class="value">${pb.day_type || '—'}</span>
+      </div>
+      <div class="playbook-item">
+        <span class="label">Best Setup</span>
+        <span class="value">${pb.best_setup || '—'}</span>
+      </div>
+      <div class="playbook-item">
+        <span class="label">Key Level</span>
+        <span class="value">${pb.key_level || '—'}</span>
+      </div>
+      <div class="playbook-item">
+        <span class="label">Danger Zone</span>
+        <span class="value" style="color:var(--bearish)">${pb.danger_zone || '—'}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderContext(ctx) {
+  if (!ctx) return;
+  document.getElementById('context-section').innerHTML = `
+    <div class="section-title">Market Context</div>
+    <div class="context-grid">
+      <div class="context-item">
+        <div class="context-label">Overnight Narrative</div>
+        <p>${ctx.overnight_narrative || '—'}</p>
+      </div>
+      <div class="context-item">
+        <div class="context-label">Session Alignment</div>
+        <p>${ctx.session_alignment || '—'}</p>
+      </div>
+      ${ctx.macro_catalysts ? `<div class="context-item"><div class="context-label">Macro Catalysts</div><p>${ctx.macro_catalysts}</p></div>` : ''}
+      <div class="context-item">
+        <div class="context-label">Market Mood</div>
+        <p>${ctx.market_mood || '—'}</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderInstruments(instruments) {
+  if (!instruments) return;
+  let html = '';
+  for (const sym of ['NQ', 'ES', 'GC']) {
+    const inst = instruments[sym];
+    if (!inst) continue;
+    const chg = changeIndicator(inst.overnight_change_points);
+    const bc = biasClass(inst.bias);
+
+    html += `
+    <div class="instrument-card">
+      <div class="instrument-header">
+        <div>
+          <span class="instrument-name">${sym}</span>
+          <span class="bias-badge ${bc}">${inst.bias || '—'}</span>
+          <span class="day-type-badge">${inst.day_type_forecast || ''}</span>
+        </div>
+        <div>
+          <span class="instrument-price">${fmt(inst.current_price)}</span>
+          <span class="instrument-change" style="color:var(--${chg.cls})">${chg.icon} ${fmt(Math.abs(inst.overnight_change_points))} (${inst.overnight_change_pct > 0 ? '+' : ''}${fmt(inst.overnight_change_pct)}%)</span>
+        </div>
+      </div>
+
+      <!-- Price Structure -->
+      <div class="subsection">
+        <div class="subsection-title">Price Structure</div>
+        <div class="data-row"><span class="data-label">Prev High / Low / Close</span><span class="data-value">${fmt(inst.prev_high)} / ${fmt(inst.prev_low)} / ${fmt(inst.prev_close)}</span></div>
+        <div class="data-row"><span class="data-label">Settlement</span><span class="data-value">${fmt(inst.prev_settlement)}</span></div>
+        <div class="data-row"><span class="data-label">YTD High / Low</span><span class="data-value">${fmt(inst.ytd_high)} / ${fmt(inst.ytd_low)}</span></div>
+        <div class="data-row"><span class="data-label">% From YTD High / Low</span><span class="data-value" style="color:var(--bearish)">${fmt(inst.pct_from_ytd_high)}%</span> / <span class="data-value" style="color:var(--bullish)">${fmt(inst.pct_from_ytd_low)}%</span></div>
+        <div class="data-row"><span class="data-label">Globex Range</span><span class="data-value">${fmt(inst.globex_high)} — ${fmt(inst.globex_low)} (${fmt(inst.globex_range)} pts)</span></div>
+        <div class="data-row"><span class="data-label">vs Prev Range</span><span class="data-value">${inst.inside_outside_prev_range || '—'}</span></div>
+      </div>
+
+      <!-- Auction Market Theory -->
+      <div class="subsection">
+        <div class="subsection-title">Auction Market Theory</div>
+        <div class="data-row"><span class="data-label">VAH / POC / VAL</span><span class="data-value">${fmt(inst.vah)} / ${fmt(inst.poc)} / ${fmt(inst.val)}</span></div>
+        <div class="data-row"><span class="data-label">Price vs VA</span><span class="data-value">${inst.price_vs_value_area || '—'}</span></div>
+        <div class="data-row"><span class="data-label">VA Playbook</span><span class="data-value" style="font-size:0.75rem">${inst.va_playbook || '—'}</span></div>
+        ${inst.naked_pocs ? `<div class="data-row"><span class="data-label">Naked POCs</span><span class="data-value" style="color:var(--neutral)">${inst.naked_pocs}</span></div>` : ''}
+      </div>
+
+      <!-- London ORB -->
+      <div class="subsection">
+        <div class="subsection-title">London ORB (3:00-3:15 AM ET)</div>
+        <div class="data-row"><span class="data-label">High / Low</span><span class="data-value">${fmt(inst.london_orb_high)} / ${fmt(inst.london_orb_low)}</span></div>
+        <div class="data-row"><span class="data-label">Range</span><span class="data-value">${fmt(inst.london_orb_range)} pts</span></div>
+        <div class="data-row"><span class="data-label">Status</span><span class="data-value">${inst.london_orb_broken || '—'}</span></div>
+        <div class="data-row"><span class="data-label">Extensions 1x/1.5x/2x</span><span class="data-value">${fmt(inst.london_orb_ext_1x)} / ${fmt(inst.london_orb_ext_1_5x)} / ${fmt(inst.london_orb_ext_2x)}</span></div>
+        ${inst.orb_context ? `<div class="data-row"><span class="data-label">Context</span><span class="data-value" style="font-size:0.75rem">${inst.orb_context}</span></div>` : ''}
+        ${renderOrbProgress(inst)}
+      </div>
+
+      <!-- NY ORB -->
+      <div class="subsection">
+        <div class="subsection-title">NY ORB (9:30-9:45 AM ET)</div>
+        ${inst.ny_orb_status === 'Filled' || inst.ny_orb_high ?
+          `<div class="data-row"><span class="data-label">High / Low</span><span class="data-value">${fmt(inst.ny_orb_high)} / ${fmt(inst.ny_orb_low)}</span></div>
+           <div class="data-row"><span class="data-label">Range</span><span class="data-value">${fmt(inst.ny_orb_range)} pts</span></div>
+           <div class="data-row"><span class="data-label">Status</span><span class="data-value">${inst.ny_orb_broken || '—'}</span></div>
+           <div class="data-row"><span class="data-label">Extensions 1x/1.5x/2x</span><span class="data-value">${fmt(inst.ny_orb_ext_1x)} / ${fmt(inst.ny_orb_ext_1_5x)} / ${fmt(inst.ny_orb_ext_2x)}</span></div>`
+          : `<div class="data-row"><span class="data-label" style="color:var(--text-muted)">Awaiting NY Open</span><span class="data-value" style="color:var(--text-muted)">—</span></div>`
+        }
+      </div>
+
+      <!-- Institutional Levels -->
+      <div class="subsection">
+        <div class="subsection-title">Institutional Levels</div>
+        <div class="data-row"><span class="data-label">VWAP</span><span class="data-value" style="color:var(--accent)">${fmt(inst.vwap)}</span></div>
+        <div class="data-row"><span class="data-label">Weekly Open</span><span class="data-value">${fmt(inst.weekly_open)}</span></div>
+        <div class="data-row"><span class="data-label">Monthly Open</span><span class="data-value">${fmt(inst.monthly_open)}</span></div>
+        <div class="data-row"><span class="data-label">Prev Week H/L</span><span class="data-value">${fmt(inst.prev_week_high)} / ${fmt(inst.prev_week_low)}</span></div>
+        <div class="data-row"><span class="data-label">Prev Month H/L</span><span class="data-value">${fmt(inst.prev_month_high)} / ${fmt(inst.prev_month_low)}</span></div>
+      </div>
+
+      <!-- Bias & Day Type -->
+      <div class="subsection">
+        <div class="subsection-title">Session Outlook</div>
+        <div class="data-row"><span class="data-label">Bias</span><span class="data-value" style="color:var(--${bc})">${inst.bias || '—'} — ${inst.bias_reason || ''}</span></div>
+        <div class="data-row"><span class="data-label">Day Type</span><span class="data-value">${inst.day_type_forecast || '—'}</span></div>
+        <div class="data-row"><span class="data-label">Detail</span><span class="data-value" style="font-size:0.75rem">${inst.day_type_detail || '—'}</span></div>
+        <div class="data-row"><span class="data-label">IB Expectation</span><span class="data-value" style="font-size:0.75rem">${inst.ib_expectation || '—'}</span></div>
+      </div>
+
+      <!-- Trade Setups -->
+      <div class="subsection">
+        <div class="subsection-title">Trade Setups</div>
+        ${(inst.trade_setups || []).map(renderTradeSetup).join('')}
+      </div>
+    </div>
+    `;
+  }
+  document.getElementById('instruments-section').innerHTML = html;
+}
+
+function renderOrbProgress(inst) {
+  if (!inst.london_orb_high || !inst.london_orb_low || !inst.current_price) return '';
+  const range = inst.london_orb_high - inst.london_orb_low;
+  if (range <= 0) return '';
+  const pos = ((inst.current_price - inst.london_orb_low) / range) * 100;
+  const clamped = Math.max(0, Math.min(100, pos));
+  const color = pos > 100 ? 'var(--bullish)' : pos < 0 ? 'var(--bearish)' : 'var(--accent)';
+  return `
+    <div class="orb-progress">
+      <div class="orb-progress-fill" style="width:${Math.min(clamped, 100)}%;background:${color}"></div>
+      <div class="orb-progress-marker" style="left:${clamped}%"></div>
+    </div>
+  `;
+}
+
+function renderTradeSetup(setup) {
+  const dir = (setup.direction || '').toLowerCase();
+  const conf = (setup.confidence || '').toLowerCase();
+  return `
+    <div class="trade-setup ${dir}">
+      <div class="trade-setup-header">
+        <div>
+          <span class="trade-direction ${dir}">${setup.direction || '—'}</span>
+          <span class="trade-type">${setup.setup_type || ''}</span>
+        </div>
+        <span class="confidence-badge ${conf}">${setup.confidence || '—'}</span>
+      </div>
+      <div class="trade-levels">
+        <div class="data-row"><span class="data-label">Entry</span><span class="data-value">${setup.entry || '—'}</span></div>
+        <div class="data-row"><span class="data-label">Stop</span><span class="data-value" style="color:var(--bearish)">${fmt(setup.stop_loss)}</span></div>
+        <div class="data-row"><span class="data-label">Target 1</span><span class="data-value" style="color:var(--bullish)">${fmt(setup.target_1)}</span></div>
+        <div class="data-row"><span class="data-label">Target 2</span><span class="data-value" style="color:var(--bullish)">${fmt(setup.target_2)}</span></div>
+      </div>
+      <div class="data-row"><span class="data-label">R:R</span><span class="data-value">${setup.rr_ratio || '—'}</span></div>
+      <div class="trade-rationale">${setup.rationale || ''}</div>
+      ${setup.invalidation ? `<div class="trade-invalidation">✕ ${setup.invalidation}</div>` : ''}
+    </div>
+  `;
+}
+
+function renderCrossMarket(cm) {
+  if (!cm) return;
+
+  const vixLevel = cm.vix ? cm.vix.level : 0;
+  let vixClass = 'vix-low';
+  if (vixLevel >= 25) vixClass = 'vix-extreme';
+  else if (vixLevel >= 20) vixClass = 'vix-elevated';
+  else if (vixLevel >= 15) vixClass = 'vix-moderate';
+
+  const items = [
+    { key: 'dxy', label: 'DXY (Dollar Index)', data: cm.dxy },
+    { key: 'vix', label: 'VIX', data: cm.vix, extraClass: vixClass },
+    { key: 'tnx', label: '10Y Yield (TNX)', data: cm.tnx },
+    { key: 'crude', label: 'Crude Oil (CL)', data: cm.crude }
+  ];
+
+  let html = '';
+  for (const item of items) {
+    const d = item.data || {};
+    const level = d.level || 0;
+    const change = d.overnight_change || 0;
+    const chg = changeIndicator(change);
+    const context = d.context || d.implication || '';
+
+    html += `
+      <div class="cross-market-item ${item.extraClass || ''}">
+        <div class="cross-market-label">${item.label}</div>
+        <div class="cross-market-value">${fmt(level)}</div>
+        <div class="cross-market-change" style="color:var(--${chg.cls})">${chg.icon} ${fmt(Math.abs(change))}</div>
+        ${context ? `<div class="cross-market-context">${context}</div>` : ''}
+      </div>
+    `;
+  }
+  document.getElementById('cross-market-section').innerHTML = html;
+}
+
+function renderCalendar(events) {
+  if (!events || events.length === 0) {
+    document.getElementById('econ-calendar-section').innerHTML = `
+      <div class="section-title">Economic Calendar</div>
+      <p style="color:var(--text-secondary);font-size:0.85rem">No high or medium impact events scheduled today.</p>
+    `;
+    return;
+  }
+
+  let rows = '';
+  for (const ev of events) {
+    const impactClass = (ev.impact || '').toLowerCase().includes('high') ? 'high-impact' : 'medium-impact';
+    const impactLabel = (ev.impact || '').toLowerCase().includes('high') ? 'high' : 'medium';
+    rows += `
+      <tr class="${impactClass}">
+        <td class="econ-time">${ev.time_et || '—'}</td>
+        <td>${ev.event || '—'}</td>
+        <td><span class="econ-impact ${impactLabel}">${ev.impact || '—'}</span></td>
+        <td style="font-family:var(--font-mono)">${ev.prior || '—'}</td>
+        <td style="font-family:var(--font-mono)">${ev.consensus || '—'}</td>
+        <td style="font-size:0.75rem;color:var(--text-secondary)">${ev.why_it_matters || '—'}</td>
+        ${ev.trade_warning ? `<td class="econ-warning">${ev.trade_warning}</td>` : '<td></td>'}
+      </tr>
+    `;
+  }
+
+  document.getElementById('econ-calendar-section').innerHTML = `
+    <div class="section-title">Economic Calendar</div>
+    <table class="econ-table">
+      <thead>
+        <tr>
+          <th>Time (ET)</th>
+          <th>Event</th>
+          <th>Impact</th>
+          <th>Prior</th>
+          <th>Forecast</th>
+          <th>Why It Matters</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+// ── UI Helpers ──
+
+function showLoading(text) {
+  document.getElementById('loading-text').textContent = text;
+  document.getElementById('loading-overlay').classList.add('active');
+  document.getElementById('btn-refresh').disabled = true;
+}
+
+function hideLoading() {
+  document.getElementById('loading-overlay').classList.remove('active');
+  document.getElementById('btn-refresh').disabled = false;
+}
+
+function showError(msg) {
+  document.getElementById('skeleton-state').style.display = 'none';
+  document.getElementById('live-content').style.display = 'none';
+  document.getElementById('error-state').style.display = 'block';
+  document.getElementById('error-state').innerHTML = `
+    <div class="error-state">
+      <h3>Briefing Unavailable</h3>
+      <p>${msg}</p>
+      <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted)">Try refreshing, or check that the API key is configured on the server.</p>
+      <button class="btn btn-primary" style="margin-top:16px" onclick="refreshBriefing()">RETRY</button>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
