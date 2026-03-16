@@ -713,9 +713,9 @@ body::after {
         <div class="skeleton skeleton-block"></div>
       </div>
       <div class="instruments-grid">
-        <div class="instrument-card"><div class="section-title">NQ</div><div class="skeleton skeleton-number"></div><div class="skeleton skeleton-block"></div><div class="skeleton skeleton-block"></div></div>
-        <div class="instrument-card"><div class="section-title">ES</div><div class="skeleton skeleton-number"></div><div class="skeleton skeleton-block"></div><div class="skeleton skeleton-block"></div></div>
-        <div class="instrument-card"><div class="section-title">GC</div><div class="skeleton skeleton-number"></div><div class="skeleton skeleton-block"></div><div class="skeleton skeleton-block"></div></div>
+        <div class="instrument-card"><div class="section-title">NASDAQ 100 E-mini Futures</div><div class="skeleton skeleton-number"></div><div class="skeleton skeleton-block"></div><div class="skeleton skeleton-block"></div></div>
+        <div class="instrument-card"><div class="section-title">S&P 500 E-mini Futures</div><div class="skeleton skeleton-number"></div><div class="skeleton skeleton-block"></div><div class="skeleton skeleton-block"></div></div>
+        <div class="instrument-card"><div class="section-title">Gold Futures</div><div class="skeleton skeleton-number"></div><div class="skeleton skeleton-block"></div><div class="skeleton skeleton-block"></div></div>
       </div>
     </div>
 
@@ -981,6 +981,8 @@ function renderContext(ctx) {
   `;
 }
 
+const DISPLAY_NAMES = { NQ: 'NASDAQ 100 E-mini Futures', ES: 'S&P 500 E-mini Futures', GC: 'Gold Futures' };
+
 function renderInstruments(instruments) {
   if (!instruments) return;
   let html = '';
@@ -994,7 +996,7 @@ function renderInstruments(instruments) {
     <div class="instrument-card">
       <div class="instrument-header">
         <div>
-          <span class="instrument-name">${sym}</span>
+          <span class="instrument-name">${DISPLAY_NAMES[sym]}</span>
           <span class="bias-badge ${bc}">${inst.bias || '—'}</span>
           <span class="day-type-badge">${inst.day_type_forecast || ''}</span>
         </div>
