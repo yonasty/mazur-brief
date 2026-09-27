@@ -1,8 +1,15 @@
+# Every image reference is pinned to $COMMIT_SHA (pattern copied from ym-tasks).
+# Deploying the floating tag (:latest) races when two pushes land close together:
+# each deploy step resolves :latest at its own run time and can serve the older
+# commit. The floating tag is still pushed for humans and rollback.
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/mazur-brief', '.']
+    args: ['build',
+           '-t', 'gcr.io/$PROJECT_ID/mazur-brief:$COMMIT_SHA',
+           '-t', 'gcr.io/$PROJECT_ID/mazur-brief',
+           '.']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/mazur-brief']
+    args: ['push', '--all-tags', 'gcr.io/$PROJECT_ID/mazur-brief']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -10,7 +17,7 @@ steps:
       - 'deploy'
       - 'mazur-brief'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/mazur-brief'
+      - 'gcr.io/$PROJECT_ID/mazur-brief:$COMMIT_SHA'
       - '--region'
       - 'us-east1'
       - '--platform'
@@ -21,4 +28,5 @@ steps:
 options:
   logging: CLOUD_LOGGING_ONLY
 images:
+  - 'gcr.io/$PROJECT_ID/mazur-brief:$COMMIT_SHA'
   - 'gcr.io/$PROJECT_ID/mazur-brief'
