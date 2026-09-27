@@ -14,6 +14,7 @@ app = FastAPI(title="The Mazur Brief")
 
 BASE_DIR = Path(__file__).parent
 VERSION = (BASE_DIR / "VERSION").read_text().strip()
+CLAUDE_MODEL = "claude-sonnet-5"
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 
 # ── Futures ticker map for yfinance ──
@@ -705,12 +706,15 @@ async def generate_briefing():
     # Step 3: Claude analyzes the real data
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=8000,
+            model=CLAUDE_MODEL,
+            # Sonnet 5 thinks by default; Sonnet 4 did not. Keep it off so the
+            # reply is plain JSON text within max_tokens, as before.
+            extra_body={"thinking": {"type": "disabled"}},
+            max_tokens=10500,
             system="You are a professional futures day trader analyzing REAL market data. All prices provided are accurate and current. Return ONLY valid JSON — no markdown, no code fences, no explanation. Use the exact numerical values provided in the prompt for all price fields.",
             messages=[{"role": "user", "content": prompt}],
         )
-        text = response.content[0].text.strip()
+        text = "".join(b.text for b in response.content if b.type == "text").strip()
         # Strip markdown code fences if present
         if text.startswith("```"):
             text = text.split("\n", 1)[1]
@@ -789,12 +793,15 @@ async def update_ny_orb():
 
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=4000,
+            model=CLAUDE_MODEL,
+            # Sonnet 5 thinks by default; Sonnet 4 did not. Keep it off so the
+            # reply is plain JSON text within max_tokens, as before.
+            extra_body={"thinking": {"type": "disabled"}},
+            max_tokens=5200,
             system="You are a professional futures trader. Return ONLY valid JSON, no markdown or explanation.",
             messages=[{"role": "user", "content": NY_ORB_PROMPT.replace("{date}", today)}],
         )
-        text = response.content[0].text.strip()
+        text = "".join(b.text for b in response.content if b.type == "text").strip()
         if text.startswith("```"):
             text = text.split("\n", 1)[1]
             if text.endswith("```"):
