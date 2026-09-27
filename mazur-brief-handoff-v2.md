@@ -45,7 +45,7 @@ The header should feel like the cold open of a one-man trading show. Slightly si
 - Single `index.html` served statically via Cloud Run
 - Anthropic API key stored as a Cloud Run secret / environment variable — never hardcoded
 - Claude generates the morning briefing as structured JSON — all levels, analysis, trade setups, market context
-- Model: `claude-sonnet-4-20250514`
+- Model: `claude-sonnet-5` (thinking explicitly disabled; see `CLAUDE_MODEL` in main.py)
 - All data cached in localStorage keyed to today's date — no repeat API calls on refresh
 - No database, no auth, no backend logic beyond serving the file
 
